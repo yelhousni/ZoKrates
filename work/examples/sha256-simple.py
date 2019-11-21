@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-#YH: Yhousni
-#2019-11-18 18:38
-
 import sys
 import hashlib
 

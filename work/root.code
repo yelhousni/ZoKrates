@@ -1,48 +1,7 @@
-import "ecc/edwardsScalarMult" as multiply
-import "utils/pack/nonStrictUnpack256" as unpack256
+import "hashes/sha256/512bitPacked" as sha256packed
 
-/*
-Verifies match of a given public/private keypair on the baby Jubjub Edwards curve.
-
-   Checks if the following equation holds for the provided keypair:
-   pk = sk*G
-   where G is the chosen base point of the subgroup
-   and * denotes scalar multiplication in the subgroup
-
-Arguments:
-   pk: Curve point. Public key.
-   sk: Field element. Private key.
-   context: Curve parameters (including generator G) used to create keypair.
-
-Returns:
-    Return 1 for pk/sk being a valid keypair, 0 otherwise.
-*/
-
-def main(field[2] pk, private field sk) -> (field):
-
-    // Order of the curve E
-    field JUBJUBE = 21888242871839275222246405745257275088614511777268538073601725287587578984328    
-    field JUBJUBC = 8         // Cofactor
-    field JUBJUBA = 168700    // Coefficient A
-    field JUBJUBD = 168696    // Coefficient D
-    field MONTA = 168698      // int(2*(JUBJUB_A+JUBJUB_D)/(JUBJUB_A-JUBJUB_D))
-    field MONTB = 1           // int(4/(JUBJUB_A-JUBJUB_D))
-    
-    // Point at infinity
-    field[2] infinity = [0, 1]
-
-    //  Generator
-    field Gu = 16540640123574156134436876038791482806971768689494387082833631921987005038935
-    field Gv = 20819045374670962167435360035096875258406992893633759881276124905556507972311
-
-    // context = curve parameters
-    field[10] context = [JUBJUBA, JUBJUBD, infinity[0], infinity[1], Gu, Gv, JUBJUBE, JUBJUBC, MONTA, MONTB]
-
-    field[2] G = [context[4], context[5]]
-
-    field[256] skBits = unpack256(sk)
-    field[2] ptExp = multiply(skBits, G, context)
-
-    field out =	if ptExp[0] == pk[0] && ptExp[1] == pk[1] then 1 else 0 fi
-
-    return out
+def main(field h0, field h1, private field a, private field b, private field c, private field d) -> (field):
+    h = sha256packed([a, b, c, d])
+    h[0] == h0
+    h[1] == h1
+    return 1

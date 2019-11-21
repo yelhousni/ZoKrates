@@ -1,5 +1,6 @@
 import "ecc/edwardsScalarMult" as multiply
 import "utils/pack/nonStrictUnpack256" as unpack256
+import "ecc/babyjubjubParams" as context
 
 /*
 Verifies match of a given public/private keypair on the baby Jubjub Edwards curve.
@@ -19,24 +20,7 @@ Returns:
 */
 
 def main(field[2] pk, private field sk) -> (field):
-
-    // Order of the curve E
-    field JUBJUBE = 21888242871839275222246405745257275088614511777268538073601725287587578984328    
-    field JUBJUBC = 8         // Cofactor
-    field JUBJUBA = 168700    // Coefficient A
-    field JUBJUBD = 168696    // Coefficient D
-    field MONTA = 168698      // int(2*(JUBJUB_A+JUBJUB_D)/(JUBJUB_A-JUBJUB_D))
-    field MONTB = 1           // int(4/(JUBJUB_A-JUBJUB_D))
-    
-    // Point at infinity
-    field[2] infinity = [0, 1]
-
-    //  Generator
-    field Gu = 16540640123574156134436876038791482806971768689494387082833631921987005038935
-    field Gv = 20819045374670962167435360035096875258406992893633759881276124905556507972311
-
-    // context = curve parameters
-    field[10] context = [JUBJUBA, JUBJUBD, infinity[0], infinity[1], Gu, Gv, JUBJUBE, JUBJUBC, MONTA, MONTB]
+    context = context()
 
     field[2] G = [context[4], context[5]]
 
